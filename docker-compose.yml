@@ -1,7 +1,7 @@
 services:
   # ① Nginxコンテナ（リバースプロキシ）
   nginx:
-    image: nginx:1.25-alpine
+    build: ./nginx        # ← imageの代わりにbuildに変更
     container_name: nginx
     ports:
       - "80:80"
@@ -13,6 +13,12 @@ services:
     depends_on:
       - php
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # ② PHP-FPMコンテナ（アプリケーション）
   php:
@@ -26,6 +32,12 @@ services:
     depends_on:
       - mysql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # ③ MySQLコンテナ（データベース）
   mysql:
@@ -46,6 +58,12 @@ services:
     networks:
       - db_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 # ネットワーク定義
 networks:
@@ -53,9 +71,9 @@ networks:
     driver: bridge
   db_network:
     driver: bridge
-    internal: true      # ← DBを外部から完全遮断
+    internal: true
 
 # ボリューム定義
 volumes:
   db_data:
-    driver: local       # 名前付きボリューム（データ永続化）
+    driver: local
