@@ -719,3 +719,8 @@
 2026/03/23 04:56:02 [notice] 1#1: start worker process 30
 2026/03/23 04:56:02 [notice] 1#1: start worker process 31
 2026/03/23 04:56:02 [notice] 1#1: start worker process 32
+2026/03/23 05:16:47 [error] 22#22: *61 connect() failed (113: Host is unreachable) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://172.18.0.2:9000", host: "localhost"
+2026/03/23 05:17:21 [error] 21#21: *63 connect() failed (113: Host is unreachable) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://172.18.0.2:9000", host: "localhost"
+2026/03/23 05:17:54 [error] 21#21: *65 connect() failed (113: Host is unreachable) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://172.18.0.2:9000", host: "localhost"
+2026/03/23 05:18:27 [error] 21#21: *67 connect() failed (113: Host is unreachable) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://172.18.0.2:9000", host: "localhost"
+2026/03/23 05:19:00 [error] 21#21: *69 connect() failed (113: Host is unreachable) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://172.18.0.2:9000", host: "localhost"
