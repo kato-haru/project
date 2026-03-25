@@ -1,18 +1,22 @@
 services:
-  # ① Nginxコンテナ（リバースプロキシ）
-  nginx:
-    build: ./nginx        # ← imageの代わりにbuildに変更
-    container_name: nginx
+  # ① Apacheコンテナ（Webサーバー+PHP）
+  apache:
+    build: ./apache
+    container_name: apache
     ports:
       - "80:80"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./logs/nginx:/var/log/nginx
+      - ./php/src:/var/www/html
+      - ./logs/apache:/var/log/apache2
     networks:
       - web_network
-    depends_on:
-      - php
+      - db_network
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
@@ -20,26 +24,7 @@ services:
       retries: 3
       start_period: 10s
 
-  # ② PHP-FPMコンテナ（アプリケーション）
-  php:
-    build: ./php
-    container_name: php
-    volumes:
-      - ./php/src:/var/www/html
-    networks:
-      - web_network
-      - db_network
-    depends_on:
-      - mysql
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "php-fpm", "-t"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  # ③ MySQLコンテナ（データベース）
+  # ② MySQLコンテナ（データベース）
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -58,6 +43,11 @@ services:
     networks:
       - db_network
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 30s
