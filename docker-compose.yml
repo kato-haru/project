@@ -5,6 +5,8 @@ services:
     container_name: apache
     ports:
       - "80:80"
+    env_file:
+    - .env  
     volumes:
       - ./php/src:/var/www/html
       - ./logs/apache:/var/log/apache2
@@ -38,6 +40,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+
       - ./mysql/init:/docker-entrypoint-initdb.d:ro
       - ./logs/mysql:/var/log/mysql
     networks:
