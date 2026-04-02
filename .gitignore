@@ -1,0 +1,11 @@
+# 環境変数・パスワード
+.env
+
+# アプリコード（別管理）
+php/src/
+
+# ログ
+logs/
+
+# SSL証明書
+letsencrypt/

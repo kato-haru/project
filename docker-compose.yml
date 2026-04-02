@@ -1,18 +1,20 @@
 services:
-  # ① Apacheコンテナ（Webサーバー+PHP）
   apache:
     build: ./apache
     container_name: apache
-    ports:
-      - "80:80"
+    network_mode: host
     env_file:
-    - .env  
+      - .env
+    environment:
+      - DB_HOST=133.18.180.200
+      - DB_PORT=3306
+      - MYSQL_DATABASE=db_fxss
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./php/src:/var/www/html
       - ./logs/apache:/var/log/apache2
-    networks:
-      - web_network
-      - db_network
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -20,53 +22,8 @@ services:
         max-size: "10m"
         max-file: "3"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/"]
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost/"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
-
-  # ② MySQLコンテナ（データベース）
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
-
-      - ./mysql/init:/docker-entrypoint-initdb.d:ro
-      - ./logs/mysql:/var/log/mysql
-    networks:
-      - db_network
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-# ネットワーク定義
-networks:
-  web_network:
-    driver: bridge
-  db_network:
-    driver: bridge
-    internal: true
-
-# ボリューム定義
-volumes:
-  db_data:
-    driver: local
