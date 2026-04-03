@@ -1,11 +1,40 @@
 # 環境変数・パスワード
 .env
+php/src/inc/.inc_config.php
 
-# アプリコード（別管理）
-php/src/
+# vendor
+php/src/vendor/
+
+# アップロードファイル
+php/src/files/
 
 # ログ
 logs/
+php/src/control-page/log/
+php/src/bat/log/
+php/src/mypage/log/
+php/src/entry/log/
+php/src/api/logs/
+php/src/api/send/log/
+
+# 一時ファイル
+php/src/control-page/tmp/
 
 # SSL証明書
 letsencrypt/
+
+# バックアップファイル（拡張子なしのバックアップ）
+php/src/**/*_bak/
+php/src/**/.bak/
+php/src/**/common/img/_bak/
+php/src/**/bat/.bak/
+*.bak
+*_bak
+*.php.*
+*.php[0-9]*
+*.css[0-9]*
+*.ico_*
+*.png.*
+*[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
+*[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]
+php/src/common/css/*.log
